@@ -79,4 +79,33 @@ Cada vez que um sensor detecta uma moto via RFID.
 ## 🧪 Testes (via Postman ou Python)
 
 ### ▶️ Criar uma moto
+POST /motos
+{
+"placa": "ABC1234",
+"modelo": "Honda CG 160",
+"ano": 2022,
+"status": "OK",
+"observacoes": "Nova moto"
+}
 
+### ▶️ Criar um sensor
+
+POST /sensores
+{
+"codigo": "SENSOR01",
+"posicaoX": 10,
+"posicaoY": 20,
+"descricao": "Parede leste"
+}
+
+### ▶️ Registrar movimentação (simulando leitura do sensor)
+
+POST /movimentacoes
+{
+"motoId": 1,
+"sensorId": 1
+}
+
+### ▶️ Buscar últimas movimentações de uma moto
+
+GET /movimentacoes/motos/{motoId}
