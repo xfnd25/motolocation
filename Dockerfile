@@ -1,5 +1,4 @@
-FROM eclipse-temurin:17-jre-alpine
-
+FROM openjdk:17
 WORKDIR /motolocation
 
 COPY target/*.jar app.jar
