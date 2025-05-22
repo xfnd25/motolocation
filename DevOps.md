@@ -40,3 +40,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 sudo docker version
 
 sudo docker login
+
+sudo docker pull fpacheco25/motolocation
+
+sudo docker run -p 8080:8080 fpacheco25/motolocation
