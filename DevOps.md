@@ -46,3 +46,46 @@ sudo docker pull fpacheco25/motolocation
 sudo docker run -p 8080:8080 fpacheco25/motolocation
 
 docker ps
+
+
+
+POST /motos 
+{
+    "placa": "XYZ5678",
+    "modelo": "Honda CB 500F",
+    "ano": 2023,
+    "status": "DISPONIVEL",
+    "observacoes": "Moto nova, pronta para uso."
+}
+
+{
+    "placa": "BCC9012",
+    "modelo": "Yamaha MT-03",
+    "ano": 2021,
+    "status": "EM_MANUTENCAO",
+    "observacoes": "Troca de óleo e pneus."
+}
+
+{
+    "placa": "GHI7890",
+    "modelo": "Royal Enfield Meteor 350",
+    "ano": 2023,
+    "status": "QUEBRADA",
+    "observacoes": "Problema no motor, aguardando peças."
+}
+
+{
+    "placa": "JKL1234",
+    "modelo": "Harley-Davidson Iron 883",
+    "ano": 2020,
+    "status": "DISPONIVEL",
+    "observacoes": "Excelente estado, pronta para a estrada."
+}
+
+{
+    "placa": "DEF3456",
+    "modelo": "Kawasaki Z400",
+    "ano": 2022,
+    "status": "ALUGADA",
+    "observacoes": "Alugada para cliente VIP."
+}
