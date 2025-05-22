@@ -102,8 +102,8 @@ POST /sensores
 
 POST /movimentacoes
 {
-"motoId": 1,
-"sensorId": 1
+    "rfid": "RFID_DA_SUA_MOTO",
+    "sensorCodigo": "SENSOR_001_PORTAO"
 }
 
 ### ▶️ Buscar últimas movimentações de uma moto
