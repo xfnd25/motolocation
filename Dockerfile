@@ -1,4 +1,7 @@
-FROM openjdk:17
+#FROM openjdk:17
+
+FROM openjdk:25-slim
+
 WORKDIR /motolocation
 
 COPY target/*.jar app.jar

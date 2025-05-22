@@ -44,3 +44,5 @@ sudo docker login
 sudo docker pull fpacheco25/motolocation
 
 sudo docker run -p 8080:8080 fpacheco25/motolocation
+
+docker ps
