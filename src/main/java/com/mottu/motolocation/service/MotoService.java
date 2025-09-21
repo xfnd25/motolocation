@@ -54,10 +54,11 @@ public class MotoService {
         Moto moto = motoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada com id: " + id));
 
+        // Atualiza os campos editáveis
         moto.setPlaca(motoDTO.getPlaca());
         moto.setModelo(motoDTO.getModelo());
         moto.setAno(motoDTO.getAno());
-        moto.setRfidTag(motoDTO.getRfidTag());
+        // A linha do rfidTag foi removida para preservar o valor original
         moto.setStatus(motoDTO.getStatus());
         moto.setObservacoes(motoDTO.getObservacoes());
 

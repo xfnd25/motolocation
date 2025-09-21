@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<nav class="navbar" th:fragment="navbar">
+    <a class="brand" th:href="@{/web/motos}">Mottu Location</a>
+    <div class="user-info">
+        <span>Olá, <strong sec:authentication="name">Usuário</strong>!</span>
+
+        <form th:action="@{/logout}" method="post" style="display: inline; margin-left: 1rem;">
+            <button type="submit" class="logout-button">Sair</button>
+        </form>
+    </div>
+</nav>
+
+</body>
+</html>
