@@ -11,7 +11,8 @@ import lombok.*;
 @Builder
 public class Sensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sensor_seq")
+    @SequenceGenerator(name = "sensor_seq", sequenceName = "SENSOR_SEQ", allocationSize = 1)
     private Long id;
 
     @NotBlank

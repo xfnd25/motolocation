@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Motos</title>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
+        thead { background-color: #f2f2f2; }
+        .actions a { margin-right: 10px; }
+        .add-button { display: inline-block; margin-bottom: 1rem; padding: 0.7rem 1.5rem; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        .pagination { margin-top: 1rem; }
+        .pagination a { margin: 0 5px; text-decoration: none; }
+        .empty-message { color: #6c757d; }
+    </style>
+</head>
+<body>
+
+<h1>Gerenciamento de Motos</h1>
+
+<a th:href="@{/web/motos/new}" class="add-button">Adicionar Nova Moto</a>
+
+<div th:if="${motosPage.empty}" class="empty-message">
+    <p>Nenhuma moto cadastrada.</p>
+</div>
+
+<table th:unless="${motosPage.empty}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Placa</th>
+        <th>Modelo</th>
+        <th>Ano</th>
+        <th>Status</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="moto : ${motosPage.content}">
+        <td th:text="${moto.id}">1</td>
+        <td th:text="${moto.placa}">ABC-1234</td>
+        <td th:text="${moto.modelo}">Honda Biz</td>
+        <td th:text="${moto.ano}">2023</td>
+        <td th:text="${moto.status}">DISPONIVEL</td>
+        <td class="actions">
+            <a th:href="@{/web/motos/edit/{id}(id=${moto.id})}">Editar</a>
+            <a th:href="@{/web/motos/delete/{id}(id=${moto.id})}"
+               onclick="return confirm('Tem certeza que deseja excluir esta moto?');">Deletar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination" th:if="${motosPage.totalPages > 1}">
+    <a th:if="${motosPage.hasPrevious()}" th:href="@{/web/motos(page=${motosPage.number - 1}, size=${motosPage.size})}">Anterior</a>
+    <span th:text="|Página ${motosPage.number + 1} de ${motosPage.totalPages}|"></span>
+    <a th:if="${motosPage.hasNext()}" th:href="@{/web/motos(page=${motosPage.number + 1}, size=${motosPage.size})}">Próxima</a>
+</div>
+
+</body>
+</html>
