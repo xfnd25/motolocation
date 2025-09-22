@@ -25,7 +25,8 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info("Verificando se usuários iniciais precisam ser criados...");
 
-        if (userRepository.findByUsername("admin").isEmpty()) {
+        // CORREÇÃO AQUI: Trocado '.isEmpty()' por '!isPresent()'
+        if (!userRepository.findByUsername("admin").isPresent()) {
             logger.info("Criando usuário ADMIN...");
             User admin = User.builder()
                     .username("admin")
@@ -36,7 +37,8 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Usuário ADMIN criado com sucesso.");
         }
 
-        if (userRepository.findByUsername("user").isEmpty()) {
+        // CORREÇÃO AQUI: Trocado '.isEmpty()' por '!isPresent()'
+        if (!userRepository.findByUsername("user").isPresent()) {
             logger.info("Criando usuário USER...");
             User user = User.builder()
                     .username("user")
