@@ -1,24 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Lista de Motos</title>
-    <style>
-        body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; }
-        .navbar { background-color: #343a40; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .navbar a { color: white; text-decoration: none; }
-        .navbar .brand { font-size: 1.5rem; font-weight: bold; }
-        .navbar .user-info span { margin-right: 1rem; }
-        .logout-button { background: none; border: 1px solid white; color: white; cursor: pointer; font-size: 1rem; padding: 5px 10px; border-radius: 4px; }
-        .container { padding: 2rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #dddddd; text-align: left; padding: 12px; }
-        thead { background-color: #f2f2f2; }
-        .actions a { margin-right: 10px; text-decoration: none; }
-        .add-button { display: inline-block; margin-bottom: 1rem; padding: 0.7rem 1.5rem; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }
-        .pagination { margin-top: 1rem; }
-        .pagination a { margin: 0 5px; text-decoration: none; }
-    </style>
+    <head th:replace="~{fragments/header :: common_header('Lista de Motos')}"></head>
 </head>
 <body>
 
@@ -36,7 +19,12 @@
     <table th:unless="${motosPage.empty}">
         <thead>
         <tr>
-            <th>ID</th><th>Placa</th><th>Modelo</th><th>Ano</th><th>Status</th><th>Ações</th>
+            <th>ID</th>
+            <th>Placa</th>
+            <th>Modelo</th>
+            <th>Ano</th>
+            <th>Status</th>
+            <th>RFID Tag</th> <th>Ações</th>
         </tr>
         </thead>
         <tbody>
@@ -46,13 +34,13 @@
             <td th:text="${moto.modelo}">Honda Biz</td>
             <td th:text="${moto.ano}">2023</td>
             <td th:text="${moto.status}">DISPONIVEL</td>
-            <td class="actions">
-                <a th:href="@{/web/motos/edit/{id}(id=${moto.id})}" sec:authorize="hasRole('ADMIN')">Editar</a>
-                <a th:href="@{/web/motos/delete/{id}(id=${moto.id})}"
-                   onclick="return confirm('Tem certeza que deseja excluir esta moto?');"
-                   sec:authorize="hasRole('ADMIN')">Deletar</a>
-                <a th:href="@{/web/motos/{id}/movimentacoes(id=${moto.id})}">Histórico</a>
-            </td>
+            <td th:text="${moto.rfidTag}">RFID-123</td> <td class="actions">
+            <a th:href="@{/web/motos/edit/{id}(id=${moto.id})}" sec:authorize="hasRole('ADMIN')">Editar</a>
+            <a th:href="@{/web/motos/delete/{id}(id=${moto.id})}"
+               onclick="return confirm('Tem certeza que deseja excluir esta moto?');"
+               sec:authorize="hasRole('ADMIN')">Deletar</a>
+            <a th:href="@{/web/motos/{id}/movimentacoes(id=${moto.id})}">Histórico</a>
+        </td>
         </tr>
         </tbody>
     </table>
