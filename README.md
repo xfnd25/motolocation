@@ -1,111 +1,105 @@
-# Integrantes: RM555317 - Fernando Fontes | RM 556814 - Guilherme Jardim 
+# Aplicação Web - Mottu Location
 
-# 🏍️ Motolocation API
-
-API REST desenvolvida em Java com Spring Boot para rastreamento de motos em pátios da Mottu utilizando tecnologia IoT. O sistema simula a leitura de tags RFID por sensores fixos, permitindo o controle da localização das motos em tempo real.
-
----
-
-## 📌 Objetivo
-
-Rastrear a posição de motos em um pátio por meio de sensores fixos que detectam **RFIDs**. A API recebe esses dados e registra as **movimentações**, associando motos a sensores com **data/hora**.
+## Integrantes
+* **RM555317** - Fernando Fontes
+* **RM556814** - Guilherme Jardim
 
 ---
 
-## 🧱 Visão Geral das Entidades
+## 🚀 Sobre o Projeto
 
-### 🏍️ `Moto`
-Representa uma moto da frota da Mottu.
+Esta é uma **Aplicação Web completa** desenvolvida com **Java e Spring Boot** para o gerenciamento da frota de motos da Mottu. O sistema permite o controle de motos e sensores, além de registrar e visualizar as movimentações, tudo através de uma interface web segura e intuitiva.
 
-| Campo       | Descrição                    |
-|-------------|------------------------------|
-| `id`        | Identificador único          |
-| `placa`     | Placa da moto                |
-| `modelo`    | Modelo da moto               |
-| `ano`       | Ano de fabricação            |
-| `rfidTag`   | Código RFID (gerado pela API)|
-| `status`    | Estado (ex: OK, Avariada)    |
-| `observacoes` | Observações gerais         |
+O projeto foi desenvolvido para a disciplina "Advanced Java Development" e cumpre todos os requisitos técnicos solicitados, incluindo:
+* **Thymeleaf:** Para a camada de visualização (frontend).
+* **Flyway:** Para o controle de versionamento do banco de dados PostgreSQL.
+* **Spring Security:** Para autenticação via formulário e controle de acesso baseado em perfis.
 
 ---
 
-### 📍 `Sensor`
-Representa a posição física no pátio.
+## 🏛️ Arquitetura
 
-| Campo        | Descrição                 |
-|--------------|---------------------------|
-| `id`         | Identificador único       |
-| `codigo`     | Código do sensor (ex: S01)|
-| `posicaoX`   | Coordenada X              |
-| `posicaoY`   | Coordenada Y              |
-| `descricao`  | Descrição da posição      |
+O projeto utiliza uma **Arquitetura em Camadas (Layered Architecture)** para garantir uma clara separação de responsabilidades:
+
+* **`Controller`:** Camada responsável por receber as requisições HTTP da interface web (`@Controller`) e da API REST (`@RestController`).
+* **`Service`:** Camada que contém a lógica de negócio principal e orquestra as operações.
+* **`Repository`:** Camada de acesso a dados, utilizando Spring Data JPA para interagir com o banco.
+* **`Entity`:** Camada que representa as tabelas do banco de dados.
 
 ---
 
-### 📅 `Movimentacao`
-Cada vez que um sensor detecta uma moto via RFID.
+## 🛠️ Tecnologias e Funcionalidades Implementadas
 
-| Campo       | Descrição                  |
-|-------------|----------------------------|
-| `id`        | Identificador              |
-| `moto`      | Referência à moto          |
-| `sensor`    | Sensor que detectou a moto |
-| `dataHora`  | Data e hora da leitura     |
-
----
-
-## 🔁 Fluxo IoT
-
-1. A Mottu cadastra uma moto via API.
-2. A API gera automaticamente um `rfidTag` para a moto.
-3. A moto é equipada com essa tag RFID.
-4. Sensores fixos (simulados) detectam a presença da moto e fazem um `POST /movimentacoes`.
-5. A API armazena as informações: **qual moto**, **qual sensor**, **quando**.
+* **Backend:** Java 17, Spring Boot, Spring Security
+* **Frontend:** Thymeleaf, HTML5, CSS3
+* **Banco de Dados:** PostgreSQL (rodando em Docker) com gerenciamento de schema via **Flyway**
+* **Autenticação:** Sistema de login e logout com perfis de usuário (`ADMIN`, `USER`).
+* **Interface Web:** CRUD completo para Motos e Sensores, registro e visualização de movimentações.
+* **Lógica de Negócio:** Geração automática de RFID na criação de motos.
+* **Qualidade:** Validações de dados nos formulários e DTOs.
 
 ---
 
-## 🚀 Funcionalidades
+## 🏁 Como Executar o Projeto
 
-- ✅ Cadastro e consulta de motos
-- ✅ Cadastro e consulta de sensores
-- ✅ Registro de movimentações por sensor
-- ✅ Histórico completo da movimentação de uma moto
-- ✅ Busca por parâmetros, ordenação e paginação
-- ✅ Validação de campos e tratamento de exceções
-- ✅ Cache para requisições frequentes
+### Pré-requisitos
+* **JDK 17** ou superior
+* **Maven 3.8** ou superior
+* **Docker Desktop** (precisa estar rodando)
+
+### Passo a Passo para Execução
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/xfnd25/motolocation.git](https://github.com/xfnd25/motolocation.git)
+    cd motolocation
+    ```
+2.  **Inicie o Banco de Dados com Docker:**
+    Abra um terminal na pasta raiz do projeto e execute o comando abaixo para iniciar o container do PostgreSQL.
+    ```bash
+    docker-compose up -d
+    ```
+    Aguarde um minuto para o banco de dados iniciar completamente na primeira vez.
+
+3.  **Execute a Aplicação Spring Boot:**
+    Você pode executar diretamente pela sua IDE (rodando a classe `MotolocationApplication.java`) ou pelo terminal com o seguinte comando Maven:
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+
+### Acesso e Credenciais
+* Acesse a aplicação no seu navegador: **[http://localhost:8080](http://localhost:8080)**
+* Você será redirecionado para a tela de login. Use as seguintes credenciais:
+    * **Administrador:**
+        * Usuário: `admin`
+        * Senha: `admin`
+    * **Usuário Comum:**
+        * Usuário: `user`
+        * Senha: `user`
 
 ---
 
-## 🧪 Testes (via Postman ou Python)
+## 💻 Funcionalidades da Aplicação Web
 
-### ▶️ Criar uma moto
-POST /motos
-{
-"placa": "ABC1234",
-"modelo": "Honda CG 160",
-"ano": 2022,
-"status": "OK",
-"observacoes": "Nova moto"
-}
+A aplicação possui dois níveis de acesso:
 
-### ▶️ Criar um sensor
+### Perfil: Administrador (`ROLE_ADMIN`)
+O administrador tem acesso total ao sistema:
+* **Gerenciar Motos:** Listar, cadastrar, editar e excluir motos. O RFID é gerado automaticamente no cadastro.
+* **Gerenciar Sensores:** Listar, cadastrar, editar e excluir sensores.
+* **Registrar Movimentação:** Simular a detecção de uma moto por um sensor através de um formulário.
+* **Ver Histórico:** Visualizar o histórico completo de movimentações para cada moto.
 
-POST /sensores
-{
-"codigo": "SENSOR01",
-"posicaoX": 10,
-"posicaoY": 20,
-"descricao": "Parede leste"
-}
+### Perfil: Usuário Comum (`ROLE_USER`)
+O usuário comum tem permissões limitadas de visualização:
+* **Visualizar Motos e Sensores:** Pode ver as listas, mas os botões de "Adicionar", "Editar" e "Deletar" não são exibidos.
+* **Ver Histórico:** Pode visualizar o histórico de movimentações das motos.
 
-### ▶️ Registrar movimentação (simulando leitura do sensor)
+---
 
-POST /movimentacoes
-{
-    "rfid": "RFID_DA_SUA_MOTO",
-    "sensorCodigo": "SENSOR_001_PORTAO"
-}
+## 🗄️ Estrutura das Migrações (Flyway)
 
-### ▶️ Buscar últimas movimentações de uma moto
-
-GET /movimentacoes/motos/{motoId}
+O banco de dados é versionado utilizando Flyway para garantir consistência. As migrações estão organizadas da seguinte forma:
+* **V1:** Cria a tabela `MOTO`.
+* **V2:** Cria as tabelas `SENSOR` e `MOVIMENTACAO`.
+* **V3:** Cria a tabela `USERS` para o sistema de segurança.
+* **V4:** Insere os dados iniciais: os usuários `admin` e `user`, e uma moto de teste.
