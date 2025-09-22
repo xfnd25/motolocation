@@ -11,15 +11,20 @@ import lombok.*;
 @Builder
 public class Sensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sensor_seq")
-    @SequenceGenerator(name = "sensor_seq", sequenceName = "SENSOR_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
     @Column(unique = true, nullable = false)
     private String codigo;
 
+    // Adicione a anotação @Column aqui
+    @Column(name = "posicao_x")
     private int posicaoX;
+
+    // Adicione a anotação @Column aqui
+    @Column(name = "posicao_y")
     private int posicaoY;
+
     private String descricao;
 }

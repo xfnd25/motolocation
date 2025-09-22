@@ -14,8 +14,7 @@ import java.util.ArrayList;
 @Builder
 public class Moto {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moto_seq")
-    @SequenceGenerator(name = "moto_seq", sequenceName = "MOTO_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
