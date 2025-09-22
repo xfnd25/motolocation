@@ -52,4 +52,5 @@ public class MotoController {
         Page<MotoDTO> result = motoService.listMotos(page, size, sortBy, placaFiltro);
         return ResponseEntity.ok(result);
     }
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Lista de Motos</title>
@@ -27,7 +27,7 @@
 <div class="container">
     <h1>Gerenciamento de Motos</h1>
 
-    <a th:href="@{/web/motos/new}" class="add-button">Adicionar Nova Moto</a>
+    <a th:href="@{/web/motos/new}" class="add-button" sec:authorize="hasRole('ADMIN')">Adicionar Nova Moto</a>
 
     <div th:if="${motosPage.empty}">
         <p>Nenhuma moto cadastrada.</p>
@@ -47,9 +47,11 @@
             <td th:text="${moto.ano}">2023</td>
             <td th:text="${moto.status}">DISPONIVEL</td>
             <td class="actions">
-                <a th:href="@{/web/motos/edit/{id}(id=${moto.id})}">Editar</a>
+                <a th:href="@{/web/motos/edit/{id}(id=${moto.id})}" sec:authorize="hasRole('ADMIN')">Editar</a>
                 <a th:href="@{/web/motos/delete/{id}(id=${moto.id})}"
-                   onclick="return confirm('Tem certeza que deseja excluir esta moto?');">Deletar</a>
+                   onclick="return confirm('Tem certeza que deseja excluir esta moto?');"
+                   sec:authorize="hasRole('ADMIN')">Deletar</a>
+                <a th:href="@{/web/motos/{id}/movimentacoes(id=${moto.id})}">Histórico</a>
             </td>
         </tr>
         </tbody>
@@ -60,6 +62,7 @@
         <span th:text="|Página ${motosPage.number + 1} de ${motosPage.totalPages}|"></span>
         <a th:if="${motosPage.hasNext()}" th:href="@{/web/motos(page=${motosPage.number + 1}, size=${motosPage.size})}">Próxima</a>
     </div>
+
 </div>
 
 </body>
