@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.ArrayList; // Import adicionado
+import java.util.List;      // Import adicionado
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,13 +21,15 @@ public class Sensor {
     @Column(unique = true, nullable = false)
     private String codigo;
 
-    // Adicione a anotação @Column aqui
     @Column(name = "posicao_x")
     private int posicaoX;
 
-    // Adicione a anotação @Column aqui
     @Column(name = "posicao_y")
     private int posicaoY;
 
     private String descricao;
+
+    // RELACIONAMENTO ADICIONADO COM A CONFIGURAÇÃO DE CASCATA
+    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Movimentacao> movimentacoes = new ArrayList<>();
 }

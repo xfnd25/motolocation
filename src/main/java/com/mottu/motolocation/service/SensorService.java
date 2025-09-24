@@ -3,27 +3,24 @@ package com.mottu.motolocation.service;
 import com.mottu.motolocation.dto.SensorDTO;
 import com.mottu.motolocation.entity.Sensor;
 import com.mottu.motolocation.exception.ResourceNotFoundException;
-import com.mottu.motolocation.repository.MovimentacaoRepository; // Import adicionado
 import com.mottu.motolocation.repository.SensorRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus; // Import adicionado
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException; // Import adicionado
+
+// Removemos os imports que não são mais necessários (MovimentacaoRepository, ResponseStatusException, etc.)
 
 @Service
 public class SensorService {
 
     private final SensorRepository sensorRepository;
-    private final MovimentacaoRepository movimentacaoRepository; // Dependência adicionada
     private final ModelMapper modelMapper;
 
-    // Construtor atualizado
-    public SensorService(SensorRepository sensorRepository, MovimentacaoRepository movimentacaoRepository, ModelMapper modelMapper) {
+    // O construtor volta ao original, sem o MovimentacaoRepository
+    public SensorService(SensorRepository sensorRepository, ModelMapper modelMapper) {
         this.sensorRepository = sensorRepository;
-        this.movimentacaoRepository = movimentacaoRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -57,14 +54,10 @@ public class SensorService {
 
     @Transactional
     public void deleteSensor(Long id) {
+        // A lógica de verificação foi removida.
+        // Agora, apenas buscamos e deletamos o sensor.
         Sensor sensor = sensorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sensor não encontrado com id: " + id));
-
-        // Verificação de segurança adicionada
-        if (movimentacaoRepository.existsBySensor(sensor)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Não é possível excluir o sensor, pois ele possui movimentações associadas.");
-        }
-
         sensorRepository.delete(sensor);
     }
 
