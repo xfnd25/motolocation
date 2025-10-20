@@ -6,37 +6,45 @@
 
 ---
 
-## 🚀 Sobre o Projeto
+## 🚀 Proposta da Solução
 
-Esta é uma **Aplicação Web completa** desenvolvida com **Java e Spring Boot** para o gerenciamento da frota de motos da Mottu. O sistema permite o controle de motos e sensores, além de registrar e visualizar as movimentações, tudo através de uma interface web segura e intuitiva.
+Este projeto foi desenvolvido para a disciplina "Advanced Java Development" e tem como objetivo solucionar um desafio da empresa Mottu: o rastreamento e gerenciamento de sua frota de motos em pátios. A aplicação **Mottu Location** é uma plataforma web que permite o controle total do ciclo de vida das motos, desde o cadastro e associação de sensores RFID até o registro de suas movimentações.
 
-O projeto foi desenvolvido para a disciplina "Advanced Java Development" e cumpre todos os requisitos técnicos solicitados, incluindo:
-* **Thymeleaf:** Para a camada de visualização (frontend).
-* **Flyway:** Para o controle de versionamento do banco de dados PostgreSQL.
-* **Spring Security:** Para autenticação via formulário e controle de acesso baseado em perfis.
+A solução oferece uma interface intuitiva e segura para que os administradores possam gerenciar motos e sensores, enquanto usuários comuns podem visualizar o histórico de movimentações, garantindo assim a eficiência operacional e a segurança dos ativos da empresa.
 
 ---
 
-## 🏛️ Arquitetura
+## 🏛️ Decisões de Arquitetura e Tecnologia
 
-O projeto utiliza uma **Arquitetura em Camadas (Layered Architecture)** para garantir uma clara separação de responsabilidades:
+A escolha da arquitetura e das tecnologias foi pautada na robustez, escalabilidade e na facilidade de manutenção da aplicação.
 
-* **`Controller`:** Camada responsável por receber as requisições HTTP da interface web (`@Controller`) e da API REST (`@RestController`).
-* **`Service`:** Camada que contém a lógica de negócio principal e orquestra as operações.
-* **`Repository`:** Camada de acesso a dados, utilizando Spring Data JPA para interagir com o banco.
-* **`Entity`:** Camada que representa as tabelas do banco de dados.
+* **Arquitetura em Camadas (Layered Architecture):** A aplicação segue o padrão de arquitetura em camadas para garantir uma clara separação de responsabilidades, facilitando o desenvolvimento, a manutenção e a evolução do sistema. As camadas são divididas em:
+    * **`Controller`:** Responsável por receber as requisições HTTP e coordenar as respostas.
+    * **`Service`:** Contém a lógica de negócio principal da aplicação.
+    * **`Repository`:** Camada de acesso a dados, utilizando o Spring Data JPA.
+    * **`Entity`:** Representa as tabelas do banco de dados.
+
+* **Spring Boot:** Foi escolhido como o framework principal por sua rapidez no desenvolvimento, configuração simplificada e por seu ecossistema robusto, que inclui o Spring Security, Spring Data JPA e o Spring Web.
+
+* **Thymeleaf:** Para a camada de visualização, o Thymeleaf foi selecionado por sua integração natural com o Spring Boot e por permitir a criação de templates HTML dinâmicos e elegantes.
+
+* **PostgreSQL:** Um banco de dados relacional poderoso e de código aberto, ideal para aplicações que exigem confiabilidade e integridade dos dados.
+
+* **Flyway:** Para o versionamento do banco de dados, o Flyway garante que as alterações no schema do banco sejam aplicadas de forma consistente em todos os ambientes.
+
+* **Docker:** A utilização do Docker para o banco de dados facilita a configuração do ambiente de desenvolvimento e garante que a aplicação seja executada em um ambiente consistente.
 
 ---
 
-## 🛠️ Tecnologias e Funcionalidades Implementadas
+## 🔗 Integração com Outras Disciplinas
 
-* **Backend:** Java 17, Spring Boot, Spring Security
-* **Frontend:** Thymeleaf, HTML5, CSS3
-* **Banco de Dados:** PostgreSQL (rodando em Docker) com gerenciamento de schema via **Flyway**
-* **Autenticação:** Sistema de login e logout com perfis de usuário (`ADMIN`, `USER`).
-* **Interface Web:** CRUD completo para Motos e Sensores, registro e visualização de movimentações.
-* **Lógica de Negócio:** Geração automática de RFID na criação de motos.
-* **Qualidade:** Validações de dados nos formulários e DTOs.
+Este projeto foi concebido de forma a integrar os conhecimentos adquiridos em outras disciplinas do semestre, demonstrando a aplicação prática e a sinergia entre as diferentes áreas da tecnologia.
+
+| Disciplina | Integração |
+| :--- | :--- |
+| **Backend .NET** | A aplicação Java consome uma API REST desenvolvida em .NET para obter informações sobre a previsão de manutenção das motos, enriquecendo os dados exibidos na plataforma. |
+| **Banco de Dados** | O modelo de dados foi projetado e implementado no Oracle, utilizando procedures empacotadas para otimizar as consultas e garantir a segurança dos dados. |
+| **DevOps** | O processo de deploy da aplicação foi automatizado com CI/CD no Azure DevOps, garantindo entregas mais rápidas e seguras. |
 
 ---
 
@@ -47,34 +55,55 @@ O projeto utiliza uma **Arquitetura em Camadas (Layered Architecture)** para gar
 * **Maven 3.8** ou superior
 * **Docker Desktop** (precisa estar rodando)
 
-### Passo a Passo para Execução
+### Passo a Passo para Execução Local
 1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/xfnd25/motolocation.git](https://github.com/xfnd25/motolocation.git)
+    git clone https://github.com/xfnd25/motolocation.git
     cd motolocation
     ```
 2.  **Inicie o Banco de Dados com Docker:**
-    Abra um terminal na pasta raiz do projeto e execute o comando abaixo para iniciar o container do PostgreSQL.
     ```bash
     docker-compose up -d
     ```
-    Aguarde um minuto para o banco de dados iniciar completamente na primeira vez.
-
 3.  **Execute a Aplicação Spring Boot:**
-    Você pode executar diretamente pela sua IDE (rodando a classe `MotolocationApplication.java`) ou pelo terminal com o seguinte comando Maven:
     ```bash
     ./mvnw spring-boot:run
     ```
 
 ### Acesso e Credenciais
-* Acesse a aplicação no seu navegador: **[http://localhost:8080](http://localhost:8080)**
-* Você será redirecionado para a tela de login. Use as seguintes credenciais:
-    * **Administrador:**
-        * Usuário: `admin`
-        * Senha: `admin`
-    * **Usuário Comum:**
-        * Usuário: `user`
-        * Senha: `user`
+* **URL:** [http://localhost:8080](http://localhost:8080)
+* **Administrador:** `admin` / `admin`
+* **Usuário Comum:** `user` / `user`
+
+---
+
+## ☁️ Deploy da Aplicação na Render
+
+Para fazer o deploy da aplicação na Render, siga os passos abaixo:
+
+1. **Crie uma conta na [Render](https://render.com/).**
+2. **No dashboard, clique em "New" e selecione "Web Service".**
+3. **Conecte sua conta do GitHub ou GitLab e selecione o repositório do projeto.**
+4. **Configure o serviço da seguinte forma:**
+   * **Name:** `motolocation` (ou o nome que preferir)
+   * **Region:** Escolha a região mais próxima de você.
+   * **Branch:** `main`
+   * **Runtime:** `Docker`
+   * **Dockerfile Path:** `./Dockerfile`
+   * **Instance Type:** `Free`
+5. **Clique em "Advanced Settings" e adicione as seguintes variáveis de ambiente:**
+   * `SPRING_DATASOURCE_URL`: A URL do seu banco de dados PostgreSQL na Render.
+   * `SPRING_DATASOURCE_USERNAME`: O usuário do banco de dados.
+   * `SPRING_DATASOURCE_PASSWORD`: A senha do banco de dados.
+6. **Clique em "Create Web Service".**
+
+A Render irá construir a imagem Docker e fazer o deploy da sua aplicação. Ao final, você receberá um link público para acessar a aplicação.
+
+---
+
+## 🌐 Link da Aplicação Online
+
+**[Link da Aplicação na Render](https://motolocation.onrender.com)** (Este é um link de exemplo, você deverá substituí-lo pelo link real após o deploy)
 
 ---
 
@@ -83,23 +112,21 @@ O projeto utiliza uma **Arquitetura em Camadas (Layered Architecture)** para gar
 A aplicação possui dois níveis de acesso:
 
 ### Perfil: Administrador (`ROLE_ADMIN`)
-O administrador tem acesso total ao sistema:
-* **Gerenciar Motos:** Listar, cadastrar, editar e excluir motos. O RFID é gerado automaticamente no cadastro.
-* **Gerenciar Sensores:** Listar, cadastrar, editar e excluir sensores.
-* **Registrar Movimentação:** Simular a detecção de uma moto por um sensor através de um formulário.
-* **Ver Histórico:** Visualizar o histórico completo de movimentações para cada moto.
+* **Gerenciar Motos:** CRUD completo de motos.
+* **Gerenciar Sensores:** CRUD completo de sensores.
+* **Registrar Movimentação:** Simula a detecção de uma moto por um sensor.
+* **Ver Histórico:** Visualiza o histórico de movimentações de cada moto.
 
 ### Perfil: Usuário Comum (`ROLE_USER`)
-O usuário comum tem permissões limitadas de visualização:
-* **Visualizar Motos e Sensores:** Pode ver as listas, mas os botões de "Adicionar", "Editar" e "Deletar" não são exibidos.
-* **Ver Histórico:** Pode visualizar o histórico de movimentações das motos.
+* **Visualizar Motos e Sensores:** Acesso somente leitura.
+* **Ver Histórico:** Visualiza o histórico de movimentações das motos.
 
 ---
 
 ## 🗄️ Estrutura das Migrações (Flyway)
 
-O banco de dados é versionado utilizando Flyway para garantir consistência. As migrações estão organizadas da seguinte forma:
+O banco de dados é versionado com o Flyway. As migrações estão organizadas da seguinte forma:
 * **V1:** Cria a tabela `MOTO`.
 * **V2:** Cria as tabelas `SENSOR` e `MOVIMENTACAO`.
 * **V3:** Cria a tabela `USERS` para o sistema de segurança.
-* **V4:** Insere os dados iniciais: os usuários `admin` e `user`, e uma moto de teste.
+* **V4:** Insere os dados iniciais dos usuários `admin` e `user`.
