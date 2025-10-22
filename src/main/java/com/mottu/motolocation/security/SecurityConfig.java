@@ -1,18 +1,25 @@
 package com.mottu.motolocation.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Habilita o uso de @PreAuthorize
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    @Value("${motolocation.api.key}")
+    private String apiKey;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -20,20 +27,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new ApiKeyAuthFilter(apiKey), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
-                        // Rotas públicas (login, css, js)
+                        .anyRequest().authenticated()
+                );
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login", "/", "/css/**", "/js/**").permitAll()
-
-                        // Rotas da APLICAÇÃO WEB
-                        .requestMatchers("/web/**").authenticated()
-
-                        // Rotas da API
-                        .requestMatchers("/api/**").authenticated()
-
-                        // Qualquer outra requisição deve ser autenticada
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -44,9 +56,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
-                )
-                .httpBasic(); // Habilita a autenticação básica para a API
-
+                );
         return http.build();
     }
 }
