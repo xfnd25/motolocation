@@ -123,6 +123,89 @@ A aplicação possui dois níveis de acesso:
 
 ---
 
+## 📖 Guia da API REST para Postman
+
+Além da interface web, a aplicação expõe uma API REST para integração. A seguir, um guia de como configurá-la e utilizá-la com o Postman.
+
+### 1. Configurando o Ambiente no Postman
+
+Para facilitar os testes, configure um ambiente no Postman com as seguintes variáveis:
+*   `base_url`: `http://localhost:8080`
+*   `api_key`: `sua-chave-secreta-aqui` (substitua pela chave definida na sua variável de ambiente `MOTOLOCATION_API_KEY`)
+
+### 2. Autenticação
+
+Todas as requisições para a API devem ser autenticadas. No Postman, configure a autenticação a nível de coleção ou em cada requisição individualmente.
+
+1.  Vá para a aba **Headers**.
+2.  Adicione uma nova chave: `X-API-KEY`.
+3.  No valor, insira a variável de ambiente do Postman: `{{api_key}}`.
+
+### 3. Endpoints
+
+#### Motos (`/api/motos`)
+
+*   **Listar Motos:**
+    *   **GET** `{{base_url}}/api/motos`
+*   **Obter Moto por ID:**
+    *   **GET** `{{base_url}}/api/motos/1`
+*   **Criar Nova Moto:**
+    *   **POST** `{{base_url}}/api/motos`
+    *   **Body** (raw, JSON):
+        ```json
+        {
+          "placa": "XYZ-5678",
+          "modelo": "Yamaha Fazer 250",
+          "ano": 2024,
+          "status": "Disponível"
+        }
+        ```
+*   **Atualizar Moto:**
+    *   **PUT** `{{base_url}}/api/motos/1`
+    *   **Body** (raw, JSON):
+        ```json
+        {
+          "placa": "XYZ-5678",
+          "modelo": "Yamaha Fazer 250",
+          "ano": 2024,
+          "status": "Em Manutenção"
+        }
+        ```
+*   **Deletar Moto:**
+    *   **DELETE** `{{base_url}}/api/motos/1`
+
+#### Sensores (`/api/sensores`)
+
+*   **Listar Sensores:**
+    *   **GET** `{{base_url}}/api/sensores`
+*   **Criar Novo Sensor:**
+    *   **POST** `{{base_url}}/api/sensores`
+    *   **Body** (raw, JSON):
+        ```json
+        {
+          "codigo": "SENSOR-PATIO-B",
+          "descricao": "Sensor da saída do pátio B",
+          "posicaoX": 150,
+          "posicaoY": 75
+        }
+        ```
+
+#### Movimentações (`/api/movimentacoes`)
+
+*   **Listar Movimentações de uma Moto:**
+    *   **GET** `{{base_url}}/api/motos/1/movimentacoes`
+*   **Criar Nova Movimentação:**
+    *   **POST** `{{base_url}}/api/movimentacoes`
+    *   **Body** (raw, JSON):
+        ```json
+        {
+          "motoId": 1,
+          "sensorId": 1
+        }
+        ```
+
+---
+
 ## 🗄️ Estrutura das Migrações (Flyway)
 
 O banco de dados é versionado com o Flyway. As migrações estão organizadas da seguinte forma:
