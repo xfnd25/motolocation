@@ -1,59 +1,72 @@
 package com.mottu.motolocation.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    // PASSO 1: O codificador de senhas continua aqui. Ele é essencial.
+    @Value("${motolocation.api.key}")
+    private String apiKey;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Usamos BCrypt para criptografar as senhas de forma segura.
         return new BCryptPasswordEncoder();
     }
 
-    // PASSO 2: O método userDetailsService() foi REMOVIDO.
-    // O Spring agora vai usar automaticamente a nossa classe AppUserDetailsService
-    // porque ela implementa a interface UserDetailsService e está marcada com @Service.
-
-    // PASSO 3: As regras de segurança continuam as mesmas.
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                // Desabilitar CSRF para simplificar, especialmente para a API
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize
-                        // Rotas públicas (login, css, js)
-                        .requestMatchers("/login", "/", "/css/**", "/js/**").permitAll()
+            .securityMatcher("/api/**")
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(new ApiKeyAuthFilter(apiKey), UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests(authorize -> authorize
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Unauthorized - invalid or missing API key\"}");
+                })
+            );
 
-                        // Rotas da APLICAÇÃO WEB que exigem perfil ADMIN
-                        .requestMatchers("/web/motos/new", "/web/motos/edit/**", "/web/motos/delete/**").hasRole("ADMIN")
+        return http.build();
+    }
 
-                        // Permitir que qualquer usuário autenticado acesse a lista de motos web
-                        .requestMatchers("/web/**").authenticated()
-
-                        // DEIXAR A API REST PÚBLICA (fora do escopo da segurança de formulário)
-                        .requestMatchers("/motos/**", "/sensores/**", "/movimentacoes/**").permitAll()
-
-                        // Qualquer outra requisição deve ser autenticada
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/web/motos", true) // Redireciona para a lista após o login
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout") // Redireciona para o login com msg de logout
-                        .permitAll()
-                );
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/**")
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/web/motos", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
 
         return http.build();
     }
