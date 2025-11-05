@@ -29,16 +29,19 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         String requestApiKey = request.getHeader(API_KEY_HEADER);
 
         if (Objects.equals(apiKey, requestApiKey)) {
-            // Se a chave for válida, autenticamos a requisição com um "usuário" genérico da API
-            // e concedemos a ele o role 'ADMIN' para que ele possa acessar todos os endpoints protegidos.
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     "api-user",
                     null,
                     AuthorityUtils.createAuthorityList("ROLE_ADMIN")
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        // chave ausente ou inválida -> responde 401 JSON e interrompe a cadeia
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\":\"Unauthorized - invalid or missing API key\"}");
     }
 }
