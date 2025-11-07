@@ -4,13 +4,14 @@ import com.mottu.motolocation.entity.Movimentacao;
 import com.mottu.motolocation.entity.Moto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long> {
+import java.util.List;
+import java.util.Optional;
 
+public interface MovimentacaoRepository {
+    Movimentacao save(Movimentacao movimentacao);
+    void deleteById(Long id);
+    Optional<Movimentacao> findById(Long id);
+    List<Movimentacao> findAll();
     Page<Movimentacao> findByMoto(Moto moto, Pageable pageable);
-
-    // O método existsBySensor(Sensor sensor) foi removido.
 }

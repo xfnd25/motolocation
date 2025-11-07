@@ -9,7 +9,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.jpa.domain.Specification;
 import java.util.UUID;
 
 
@@ -37,7 +36,7 @@ public class MotoService {
             moto.setRfidTag("RFID-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         }
 
-        moto = motoRepository.save(moto);
+        moto = motoRepository.create(moto);
         return modelMapper.map(moto, MotoDTO.class);
     }
 
@@ -62,29 +61,21 @@ public class MotoService {
         moto.setStatus(motoDTO.getStatus());
         moto.setObservacoes(motoDTO.getObservacoes());
 
-        moto = motoRepository.save(moto);
+        moto = motoRepository.update(moto);
         return modelMapper.map(moto, MotoDTO.class);
     }
 
     @Transactional
     public void deleteMoto(Long id) {
-        Moto moto = motoRepository.findById(id)
+        motoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Moto não encontrada com id: " + id));
-        motoRepository.delete(moto);
+        motoRepository.delete(id);
     }
 
     @Cacheable("motos")
     public Page<MotoDTO> listMotos(int page, int size, String sortBy, String placaFiltro) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-
-        Specification<Moto> spec = (root, query, cb) -> {
-            if (placaFiltro == null || placaFiltro.isEmpty()) {
-                return cb.conjunction(); // Sem filtro, retorna tudo
-            }
-            return cb.like(cb.lower(root.get("placa")), "%" + placaFiltro.toLowerCase() + "%");
-        };
-
-        Page<Moto> motos = motoRepository.findAll(spec, pageable);
+        // The sortBy parameter is ignored for now, as the stored procedure does not support dynamic sorting.
+        Page<Moto> motos = motoRepository.findAllPaginated(page, size, placaFiltro);
 
         return motos.map(moto -> modelMapper.map(moto, MotoDTO.class));
     }

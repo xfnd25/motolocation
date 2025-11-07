@@ -28,9 +28,9 @@ A escolha da arquitetura e das tecnologias foi pautada na robustez, escalabilida
 
 * **Thymeleaf:** Para a camada de visualização, o Thymeleaf foi selecionado por sua integração natural com o Spring Boot e por permitir a criação de templates HTML dinâmicos e elegantes.
 
-* **PostgreSQL:** Um banco de dados relacional poderoso e de código aberto, ideal para aplicações que exigem confiabilidade e integridade dos dados.
+* **Oracle Database:** Um banco de dados relacional robusto e amplamente utilizado no mercado, ideal para aplicações que exigem alta performance, segurança e escalabilidade.
 
-* **Flyway:** Para o versionamento do banco de dados, o Flyway garante que as alterações no schema do banco sejam aplicadas de forma consistente em todos os ambientes.
+* **PL/SQL Stored Procedures:** A lógica de acesso a dados foi implementada em PL/SQL, utilizando pacotes e procedures para garantir a segurança, a performance e a manutenibilidade do código.
 
 * **Docker:** A utilização do Docker para o banco de dados facilita a configuração do ambiente de desenvolvimento e garante que a aplicação seja executada em um ambiente consistente.
 
@@ -53,7 +53,7 @@ Este projeto foi concebido de forma a integrar os conhecimentos adquiridos em ou
 ### Pré-requisitos
 * **JDK 17** ou superior
 * **Maven 3.8** ou superior
-* **Docker Desktop** (precisa estar rodando)
+* **Oracle Database 11g** ou superior (ou uma imagem Docker do Oracle)
 
 ### Passo a Passo para Execução Local
 1.  **Clone o repositório:**
@@ -61,10 +61,10 @@ Este projeto foi concebido de forma a integrar os conhecimentos adquiridos em ou
     git clone https://github.com/xfnd25/motolocation.git
     cd motolocation
     ```
-2.  **Inicie o Banco de Dados com Docker:**
-    ```bash
-    docker-compose up -d
-    ```
+2.  **Configure o Banco de Dados Oracle:**
+    * Certifique-se de que o seu banco de dados Oracle está em execução.
+    * Execute os scripts SQL fornecidos no projeto para criar as tabelas, os pacotes e as procedures.
+    * Configure a conexão com o banco de dados no arquivo `src/main/resources/application.properties`.
 3.  **Execute a Aplicação Spring Boot:**
     ```bash
     ./mvnw spring-boot:run
@@ -87,12 +87,12 @@ Para fazer o deploy da aplicação na Render, siga os passos abaixo:
 4. **Configure o serviço da seguinte forma:**
    * **Name:** `motolocation` (ou o nome que preferir)
    * **Region:** Escolha a região mais próxima de você.
-   * **Branch:** `main`
+   * **Branch:** `feature/oracle-integration-2`
    * **Runtime:** `Docker`
    * **Dockerfile Path:** `./Dockerfile`
    * **Instance Type:** `Free`
 5. **Clique em "Advanced Settings" e adicione as seguintes variáveis de ambiente:**
-   * `SPRING_DATASOURCE_URL`: A URL do seu banco de dados PostgreSQL na Render.
+   * `SPRING_DATASOURCE_URL`: A URL do seu banco de dados Oracle.
    * `SPRING_DATASOURCE_USERNAME`: O usuário do banco de dados.
    * `SPRING_DATASOURCE_PASSWORD`: A senha do banco de dados.
 6. **Clique em "Create Web Service".**
@@ -203,13 +203,20 @@ Todas as requisições para a API devem ser autenticadas. No Postman, configure 
           "sensorId": 1
         }
         ```
+*   **Exportar Todos os Dados para JSON:**
+    *   **GET** `{{base_url}}/api/export/all-data`
 
 ---
 
-## 🗄️ Estrutura das Migrações (Flyway)
+## 🗄️ Integração com o Banco de Dados Oracle
 
-O banco de dados é versionado com o Flyway. As migrações estão organizadas da seguinte forma:
-* **V1:** Cria a tabela `MOTO`.
-* **V2:** Cria as tabelas `SENSOR` e `MOVIMENTACAO`.
-* **V3:** Cria a tabela `USERS` para o sistema de segurança.
-* **V4:** Insere os dados iniciais dos usuários `admin` e `user`.
+Esta branch do projeto foi refatorada para utilizar um banco de dados Oracle com PL/SQL stored procedures para todas as operações de acesso a dados.
+
+### Configuração
+*   **Banco de Dados:** Oracle Database 11g ou superior.
+*   **Scripts SQL:** Os scripts para criar as tabelas, pacotes e procedures estão localizados no diretório `src/main/resources/db/oracle`.
+*   **Conexão:** A conexão com o banco de dados é configurada no arquivo `src/main/resources/application.properties`.
+
+### Testes
+*   Os testes de unidade e integração foram refatorados para utilizar mocks da camada de repositório, utilizando a anotação `@MockBean` do Spring Boot. Isso permite que a lógica de negócio seja testada de forma isolada do banco de dados.
+*   Para executar os testes, utilize o comando `./mvnw test`.

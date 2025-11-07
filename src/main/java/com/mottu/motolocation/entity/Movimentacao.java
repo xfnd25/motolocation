@@ -15,16 +15,22 @@ public class Movimentacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "moto_id", nullable = false)
     private Moto moto;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sensor_id", nullable = false)
     private Sensor sensor;
 
-    private LocalDateTime dataHora;
+    @Column(nullable = false)
+    private final LocalDateTime timestampMov = LocalDateTime.now();
 
-    @PrePersist
-    public void setTimestamp() {
-        this.dataHora = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoMovimentacao tipo;
+
+    public enum TipoMovimentacao {
+        ENTRADA, SAIDA
     }
 }

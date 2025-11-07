@@ -1,11 +1,8 @@
 package com.mottu.motolocation.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import java.util.ArrayList; // Import adicionado
-import java.util.List;      // Import adicionado
 
 @Entity
 @Data
@@ -21,15 +18,11 @@ public class Sensor {
     @Column(unique = true, nullable = false)
     private String codigo;
 
-    @Column(name = "posicao_x")
-    private int posicaoX;
+    private double posicaoX;
+    private double posicaoY;
 
-    @Column(name = "posicao_y")
-    private int posicaoY;
-
+    @NotBlank
     private String descricao;
 
-    // RELACIONAMENTO ADICIONADO COM A CONFIGURAÇÃO DE CASCATA
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Movimentacao> movimentacoes = new ArrayList<>();
+    private String status;
 }

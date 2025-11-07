@@ -1,13 +1,16 @@
 package com.mottu.motolocation.repository;
 
 import com.mottu.motolocation.entity.Sensor;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;  // <--- Importar essa interface
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface SensorRepository extends JpaRepository<Sensor, Long>, JpaSpecificationExecutor<Sensor> {
+public interface SensorRepository {
+    Sensor save(Sensor sensor);
+    void deleteById(Long id);
+    Optional<Sensor> findById(Long id);
+    List<Sensor> findAll();
+    Page<Sensor> findAll(int page, int size);
     Optional<Sensor> findByCodigo(String codigo);
 }
